@@ -2,17 +2,48 @@ const States = require("../models/States");
 
 
 
-
-
-// GET STATE
 const getAllStates = async (req, res) => {
-    const states = await States.find({});
-    res.status(200).json({
-        data: states,
-        success: true,
-        message: `${req.method} - request to State endpoint`
-    });
-}
+    
+    const { name, yearMadeState, population } = req.query;
+
+    
+    const filter = {};
+
+    
+    if (name) {
+    
+        filter.name = { $regex: name, $options: 'i' };
+    }
+
+    
+    if (yearMadeState) {
+        
+        filter.yearMadeState = yearMadeState;
+    }
+
+    if (population) {
+        
+        filter.population = population;
+    }
+    
+
+    // Query the database with the constructed filter
+    try {
+        const states = await States.find(filter);
+
+        // Return the filtered states in the response
+        res.status(200).json({
+            data: states,
+            success: true,
+            message: `${req.method} - request to State endpoint with filters: ${JSON.stringify(filter)}`
+        });
+    } catch (error) {
+        // Handle errors
+        console.error('Error fetching states:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+};
+
 
 // GET by Id STATE
 const getStateById = (req, res) => {
