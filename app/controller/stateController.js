@@ -48,10 +48,13 @@ const getAllStates = async (req, res) => {
 // GET by Id STATE
 const getStateById = (req, res) => {
     const {id} = req.params;
+    const data = req.body;
+    res.json(data);
     res.status(200).json({
         id,
         success: true,
-        message: `${req.method} - request to State endpoint`
+        message: `${req.method} - request to State endpoint`,
+       
     });
 }
 
